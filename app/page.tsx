@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Search, Chrome, Sparkles, Zap, Brain, Globe, ArrowRight, Bell } from "lucide-react"
 import { generateToolSuggestions, analyzeTabs } from "./actions"
+import { authClient } from "@/lib/auth-client"
 
 interface Tool {
   name: string
@@ -87,7 +88,16 @@ export default function ScrabbleLanding() {
                 <Button variant="ghost" className="text-black hover:bg-gray-300/30 transition-all duration-300">
                   discover
                 </Button>
-                <Button className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-black border-0 shadow-lg hover:shadow-xl transition-all duration-300">
+                <Button 
+                onClick={() => 
+                  authClient.signIn.social({
+                    provider: "github",
+                    callbackURL: "/dashboard",
+                    errorCallbackURL: "/login?error=true"
+                  })
+                }
+                
+                className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-black border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                   login
                 </Button>
               </div>
