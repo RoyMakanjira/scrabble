@@ -5,7 +5,22 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Search, Chrome, Sparkles, Zap, Brain, Globe, ArrowRight, Bell } from "lucide-react"
+import {
+  Search,
+  Chrome,
+  Sparkles,
+  Zap,
+  Brain,
+  Globe,
+  ArrowRight,
+  Bell,
+  Star,
+  Users,
+  Shield,
+  Twitter,
+  Github,
+  Linkedin,
+} from "lucide-react"
 import { generateToolSuggestions, analyzeTabs } from "./actions"
 import { authClient } from "@/lib/auth-client"
 
@@ -48,13 +63,11 @@ export default function ScrabbleLanding() {
         console.error("Error analyzing tabs:", error)
       }
     }
-
     analyzeTabsAsync()
   }, [])
 
   const handleSearch = async () => {
     if (!query.trim()) return
-
     setIsLoading(true)
     try {
       const suggestions = await generateToolSuggestions(query)
@@ -67,42 +80,52 @@ export default function ScrabbleLanding() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-gray-400/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-gray-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gray-600/20 rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      {/* Navigation - Cluely-inspired clean design */}
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo */}
+            <div className="flex items-center space-x-2">
+              <Sparkles className="w-7 h-7 text-indigo-600" />
+              <span className="text-xl font-bold text-slate-900">scrabble</span>
+            </div>
 
-      {/* Navigation */}
-      <nav className="relative z-10 p-6">
-        <div className="max-w-7xl mx-auto">
-          <Card className="bg-white/30 backdrop-blur-xl border-gray-300/50 shadow-2xl">
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center space-x-2">
-                <Sparkles className="w-6 h-6 text-black" />
-                <span className="text-xl font-bold text-black">scrabble</span>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Button variant="ghost" className="text-black hover:bg-gray-300/30 transition-all duration-300">
-                  discover
-                </Button>
-                <Button 
-                onClick={() => 
+            {/* Center Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              <Button variant="ghost" className="text-slate-600 hover:text-slate-900 font-medium">
+                Features
+              </Button>
+              <Button variant="ghost" className="text-slate-600 hover:text-slate-900 font-medium">
+                Pricing
+              </Button>
+              <Button variant="ghost" className="text-slate-600 hover:text-slate-900 font-medium">
+                Enterprise
+              </Button>
+              <Button variant="ghost" className="text-slate-600 hover:text-slate-900 font-medium">
+                Help Center
+              </Button>
+            </div>
+
+            {/* Right Actions */}
+            <div className="flex items-center space-x-3">
+              <Button variant="ghost" className="text-slate-600 hover:text-slate-900 font-medium">
+                Log in
+              </Button>
+              <Button
+                onClick={() =>
                   authClient.signIn.social({
                     provider: "github",
                     callbackURL: "/dashboard",
-                    errorCallbackURL: "/login?error=true"
+                    errorCallbackURL: "/login?error=true",
                   })
                 }
-                
-                className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-black border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-                  login
-                </Button>
-              </div>
+                className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+              >
+                Get started
+              </Button>
             </div>
-          </Card>
+          </div>
         </div>
       </nav>
 
@@ -112,12 +135,12 @@ export default function ScrabbleLanding() {
           {notifications.map((notification, index) => (
             <Card
               key={index}
-              className="bg-white/30 backdrop-blur-xl border-gray-300/50 shadow-2xl mb-4 animate-slide-in-right"
+              className="bg-white/95 backdrop-blur-xl border-slate-200 shadow-lg mb-4 animate-slide-in-right"
             >
               <div className="p-4 flex items-start space-x-3">
-                <Bell className="w-5 h-5 text-yellow-400 mt-0.5" />
+                <Bell className="w-5 h-5 text-amber-500 mt-0.5" />
                 <div>
-                  <p className="text-sm text-black/90">{notification}</p>
+                  <p className="text-sm text-slate-700">{notification}</p>
                 </div>
               </div>
             </Card>
@@ -125,133 +148,406 @@ export default function ScrabbleLanding() {
         </div>
       )}
 
-      {/* Main Content */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-20">
-        <div className="max-w-4xl mx-auto text-center space-y-12">
-          {/* Hero Section */}
-          <div className="space-y-6">
-            <h1 className="text-6xl md:text-7xl font-bold text-black leading-tight">
-              Turn Chaos into{" "}
-              <span className="bg-gradient-to-r from-gray-600 to-gray-800 bg-clip-text text-transparent">
-                efficient
-              </span>
-              <br />
-              workflows...
-            </h1>
-            <p className="text-xl text-black/80 max-w-2xl mx-auto">
-              AI-powered tool discovery that analyzes your workflow and suggests the perfect resources for any task
-            </p>
-          </div>
-
-          {/* Search Section */}
-          <Card className="bg-white/30 backdrop-blur-xl border-gray-300/50 shadow-2xl p-8 max-w-2xl mx-auto">
+      {/* Hero Section */}
+      <main className="relative">
+        <div className="max-w-7xl mx-auto px-6 pt-20 pb-16">
+          <div className="text-center space-y-8">
+            {/* Hero Content */}
             <div className="space-y-6">
-              <div className="flex space-x-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-black/60 w-5 h-5" />
-                  <Input
-                    placeholder="Hi help find the best resources for my assignment today"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                    className="pl-12 bg-white/10 border-white/20 text-black placeholder:text-black/60 focus:border-purple-400 transition-all duration-300"
-                  />
-                </div>
-                <Button
-                  onClick={handleSearch}
-                  disabled={isLoading}
-                  className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-black border-0 shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  {isLoading ? (
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <ArrowRight className="w-5 h-5" />
-                  )}
-                </Button>
+              <div className="inline-flex items-center px-4 py-2 bg-indigo-50 rounded-full text-indigo-700 text-sm font-medium">
+                <Sparkles className="w-4 h-4 mr-2" />
+                AI-Powered Workflow Intelligence
               </div>
 
-              {/* Chrome Tabs Integration */}
-              <div className="flex items-center justify-center space-x-2 text-black/60">
-                <Chrome className="w-4 h-4" />
-                <span className="text-sm">Analyzing {tabs.length} open tabs for context</span>
-              </div>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-tight">
+                Turn Chaos into{" "}
+                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                  Efficient
+                </span>
+                <br />
+                Workflows
+              </h1>
+
+              <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                AI-powered tool discovery that analyzes your current workflow and suggests the perfect resources for any
+                task. Get personalized recommendations in seconds.
+              </p>
             </div>
-          </Card>
 
-          {/* Tool Suggestions */}
-          {tools.length > 0 && (
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-black">AI-Suggested Tools</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {tools.map((tool, index) => (
-                  <Card
-                    key={index}
-                    className="bg-white/30 backdrop-blur-xl border-gray-300/50 shadow-2xl hover:bg-white/20 transition-all duration-300 group"
-                  >
-                    <div className="p-6 space-y-4">
-                      <div className="flex items-start justify-between">
-                        <h3 className="font-semibold text-black group-hover:text-purple-300 transition-colors">
-                          {tool.name}
-                        </h3>
-                        <Badge variant="secondary" className="bg-purple-500/20 text-purple-300 border-purple-400/30">
-                          {tool.category}
-                        </Badge>
-                      </div>
-                      <p className="text-black/70 text-sm">{tool.description}</p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-purple-300 hover:text-black hover:bg-purple-500/20 transition-all duration-300"
-                        onClick={() => window.open(tool.url, "_blank")}
-                      >
-                        Try it out <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
+            {/* Search Section */}
+            <div className="max-w-2xl mx-auto">
+              <Card className="bg-white border-slate-200 shadow-xl p-8">
+                <div className="space-y-6">
+                  <div className="flex space-x-4">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                      <Input
+                        placeholder="Help me find the best resources for my assignment today"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+                        className="pl-12 h-12 bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-500 focus:border-indigo-500 focus:ring-indigo-500"
+                      />
                     </div>
-                  </Card>
-                ))}
-              </div>
-            </div>
-          )}
+                    <Button
+                      onClick={handleSearch}
+                      disabled={isLoading}
+                      className="h-12 px-8 bg-indigo-600 hover:bg-indigo-700 text-white"
+                    >
+                      {isLoading ? (
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      ) : (
+                        <ArrowRight className="w-5 h-5" />
+                      )}
+                    </Button>
+                  </div>
 
-          {/* Features */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
-            <Card className="bg-white/20 backdrop-blur-xl border-gray-300/30 shadow-2xl p-6 text-center hover:bg-gray-300/20 transition-all duration-300">
-              <Brain className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-black mb-2">AI-Powered Matching</h3>
-              <p className="text-black/70">Smart algorithms analyze your needs and suggest perfect tools</p>
-            </Card>
-            <Card className="bg-white/20 backdrop-blur-xl border-gray-300/30 shadow-2xl p-6 text-center hover:bg-gray-300/20 transition-all duration-300">
-              <Globe className="w-12 h-12 text-blue-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-black mb-2">Context Awareness</h3>
-              <p className="text-black/70">Reads your browser tabs to understand your current workflow</p>
-            </Card>
-            <Card className="bg-white/20 backdrop-blur-xl border-gray-300/30 shadow-2xl p-6 text-center hover:bg-gray-300/20 transition-all duration-300">
-              <Zap className="w-12 h-12 text-yellow-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-black mb-2">Instant Results</h3>
-              <p className="text-black/70">Get personalized tool recommendations in seconds</p>
-            </Card>
+                  {/* Chrome Integration Status */}
+                  <div className="flex items-center justify-center space-x-2 text-slate-500">
+                    <Chrome className="w-4 h-4" />
+                    <span className="text-sm">Analyzing {tabs.length} open tabs for context</span>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* Tool Suggestions */}
+        {tools.length > 0 && (
+          <div className="max-w-7xl mx-auto px-6 py-16">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">AI-Suggested Tools</h2>
+              <p className="text-slate-600">Personalized recommendations based on your query and current workflow</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {tools.map((tool, index) => (
+                <Card
+                  key={index}
+                  className="bg-white border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
+                >
+                  <div className="p-6 space-y-4">
+                    <div className="flex items-start justify-between">
+                      <h3 className="font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                        {tool.name}
+                      </h3>
+                      <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 border-indigo-200">
+                        {tool.category}
+                      </Badge>
+                    </div>
+                    <p className="text-slate-600 text-sm leading-relaxed">{tool.description}</p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 p-0 h-auto font-medium"
+                      onClick={() => window.open(tool.url, "_blank")}
+                    >
+                      Try it out <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Features Section */}
+        <div className="bg-slate-50 py-24">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Why Choose Scrabble?</h2>
+              <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+                Powerful features designed to streamline your workflow and boost productivity
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="bg-white border-slate-200 shadow-sm p-8 text-center hover:shadow-lg transition-all duration-300">
+                <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Brain className="w-8 h-8 text-indigo-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-4">AI-Powered Matching</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Advanced algorithms analyze your needs and suggest the perfect tools for your specific workflow and
+                  requirements.
+                </p>
+              </Card>
+
+              <Card className="bg-white border-slate-200 shadow-sm p-8 text-center hover:shadow-lg transition-all duration-300">
+                <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Globe className="w-8 h-8 text-purple-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-4">Context Awareness</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Intelligently reads your browser tabs and current projects to understand your workflow and provide
+                  relevant suggestions.
+                </p>
+              </Card>
+
+              <Card className="bg-white border-slate-200 shadow-sm p-8 text-center hover:shadow-lg transition-all duration-300">
+                <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Zap className="w-8 h-8 text-amber-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-slate-900 mb-4">Instant Results</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  Get personalized tool recommendations in seconds, not minutes. Fast, accurate, and tailored to your
+                  specific needs.
+                </p>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* Testimonials Section */}
+        <div className="py-24">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Trusted by Professionals</h2>
+              <p className="text-xl text-slate-600">See what our users are saying about Scrabble</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <Card className="bg-white border-slate-200 shadow-sm p-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-amber-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-slate-600 mb-4">
+                  "Scrabble has completely transformed how I discover and use tools for my projects. The AI
+                  recommendations are spot-on!"
+                </p>
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-indigo-600 font-semibold">SJ</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">Sarah Johnson</p>
+                    <p className="text-sm text-slate-500">Product Designer</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="bg-white border-slate-200 shadow-sm p-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-amber-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-slate-600 mb-4">
+                  "The context awareness feature is incredible. It knows exactly what I need based on my current work."
+                </p>
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-purple-600 font-semibold">MC</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">Mike Chen</p>
+                    <p className="text-sm text-slate-500">Software Engineer</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="bg-white border-slate-200 shadow-sm p-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-4 h-4 text-amber-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-slate-600 mb-4">
+                  "Saves me hours every week. I no longer waste time searching for the right tools - Scrabble finds them
+                  for me."
+                </p>
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-amber-600 font-semibold">ER</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-slate-900">Emily Rodriguez</p>
+                    <p className="text-sm text-slate-500">Marketing Manager</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </div>
+
+        {/* Call to Action Section */}
+        <div className="bg-indigo-600 py-20">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Transform Your Workflow?</h2>
+            <p className="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
+              Join thousands of professionals who use Scrabble to discover the perfect tools for their projects.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button size="lg" className="bg-white text-indigo-600 hover:bg-slate-50 px-8 py-3 text-lg font-semibold">
+                Start Free Trial
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-white text-white hover:bg-white hover:text-indigo-600 px-8 py-3 text-lg font-semibold bg-transparent"
+              >
+                Watch Demo
+              </Button>
+            </div>
           </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 p-6">
-        <div className="max-w-7xl mx-auto">
-          <Card className="bg-white/20 backdrop-blur-xl border-gray-300/30 shadow-2xl">
-            <div className="flex items-center justify-between p-6">
-              <div className="flex items-center space-x-2 text-black/70">
-                <span>© 2025 Scrabble</span>
+      {/* Enhanced Footer */}
+      <footer className="bg-slate-900 text-white">
+        <div className="max-w-7xl mx-auto px-6 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+            {/* Company Info */}
+            <div className="lg:col-span-2">
+              <div className="flex items-center space-x-2 mb-6">
+                <Sparkles className="w-7 h-7 text-indigo-400" />
+                <span className="text-xl font-bold">scrabble</span>
               </div>
-              <div className="flex items-center space-x-6">
-                <Button variant="ghost" size="sm" className="text-black/70 hover:text-black hover:bg-gray-300/20">
-                  Privacy Policy
+              <p className="text-slate-400 mb-6 leading-relaxed">
+                AI-powered tool discovery that transforms chaotic workflows into efficient, productive systems. Discover
+                the perfect tools for any task in seconds.
+              </p>
+              <div className="flex space-x-4">
+                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white p-2">
+                  <Twitter className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="sm" className="text-black/70 hover:text-black hover:bg-gray-300/20">
-                  Terms
+                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white p-2">
+                  <Github className="w-5 h-5" />
+                </Button>
+                <Button variant="ghost" size="sm" className="text-slate-400 hover:text-white p-2">
+                  <Linkedin className="w-5 h-5" />
                 </Button>
               </div>
             </div>
-          </Card>
+
+            {/* Product */}
+            <div>
+              <h3 className="font-semibold text-white mb-4">Product</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Features
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Integrations
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    API
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Chrome Extension
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Mobile App
+                  </Button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h3 className="font-semibold text-white mb-4">Company</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    About Us
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Careers
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Press
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Blog
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Partners
+                  </Button>
+                </li>
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h3 className="font-semibold text-white mb-4">Support</h3>
+              <ul className="space-y-3">
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Help Center
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Documentation
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Community
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Contact Us
+                  </Button>
+                </li>
+                <li>
+                  <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto font-normal">
+                    Status
+                  </Button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Footer Bottom */}
+          <div className="border-t border-slate-800 mt-12 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+              <div className="flex items-center space-x-6 text-slate-400 text-sm">
+                <span>© 2025 Scrabble. All rights reserved.</span>
+                <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto text-sm font-normal">
+                  Privacy Policy
+                </Button>
+                <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto text-sm font-normal">
+                  Terms of Service
+                </Button>
+                <Button variant="ghost" className="text-slate-400 hover:text-white p-0 h-auto text-sm font-normal">
+                  Cookie Policy
+                </Button>
+              </div>
+
+              <div className="flex items-center space-x-4 text-slate-400 text-sm">
+                <div className="flex items-center space-x-2">
+                  <Users className="w-4 h-4" />
+                  <span>10,000+ users</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Shield className="w-4 h-4" />
+                  <span>SOC 2 Compliant</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
