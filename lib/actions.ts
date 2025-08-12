@@ -6,8 +6,7 @@ import { createOpenAI } from "@ai-sdk/openai"
 const deepseek = createOpenAI({
   name: "deepseek",
   apiKey: process.env.DEEPSEEK_API_KEY ?? "",
-  baseURL: "https://api.deepseek.com/v1",
-
+  baseURL: "https://api.deepseek.com/v1/chat/completions",
 })
 
 interface Tool {
