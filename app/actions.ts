@@ -7,7 +7,7 @@ const deepseek = createOpenAI({
   name: "deepseek",
   apiKey: process.env.DEEPSEEK_API_KEY ?? "",
   baseURL: "https://api.deepseek.com/v1",
-  compatibility: "strict", // Ensure strict OpenAI compatibility
+
 })
 
 interface Tool {
