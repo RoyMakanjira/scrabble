@@ -1,7 +1,14 @@
 "use server"
 
 import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { createOpenAI } from "@ai-sdk/openai"
+
+const deepseek = createOpenAI({
+  name: "deepseek",
+  apiKey: process.env.DEEPSEEK_API_KEY ?? "",
+  baseURL: "https://api.deepseek.com/v1",
+  compatibility: "strict", // Ensure strict OpenAI compatibility
+})
 
 interface Tool {
   name: string
@@ -19,20 +26,34 @@ interface TabInfo {
 export async function generateToolSuggestions(query: string): Promise<Tool[]> {
   try {
     const { text } = await generateText({
-      model: openai("gpt-4o"),
+      model: deepseek("deepseek-chat"),
       system: `You are an AI assistant that suggests the best tools and resources for any given task or query. 
+      You must analyze the user's request carefully and provide highly relevant, practical workflow suggestions.
+      
       Return your response as a JSON array of tools with the following structure:
       [
         {
           "name": "Tool Name",
-          "description": "Brief description of what the tool does",
-          "category": "Category (e.g., Design, Development, Research, etc.)",
+          "description": "Brief description of what the tool does and why it's perfect for this workflow",
+          "category": "Category (e.g., Design, Development, Research, Productivity, AI Tools, etc.)",
           "url": "https://example.com"
         }
       ]
       
-      Suggest 3-6 relevant tools that would be most helpful for the user's query. Make sure the tools are real and the URLs are accurate.`,
-      prompt: `User query: "${query}". Please suggest the best tools and resources for this task.`,
+      Guidelines for tool suggestions:
+      - Suggest 4-6 highly relevant tools that would create an efficient workflow
+      - Prioritize tools that work well together in a workflow
+      - Include both popular and specialized tools when appropriate
+      - Make sure all tools are real and URLs are accurate
+      - Focus on tools that directly solve the user's specific needs
+      - Consider the user's skill level and provide a mix of beginner-friendly and advanced tools`,
+      prompt: `User query: "${query}". 
+      
+      Please analyze this request and suggest the best tools and resources that would create an efficient workflow for this specific task. Consider:
+      1. What type of work this involves
+      2. What tools would work best together
+      3. Both free and premium options when relevant
+      4. Tools that can streamline the entire process from start to finish`,
     })
 
     // Parse the JSON response
@@ -43,25 +64,31 @@ export async function generateToolSuggestions(query: string): Promise<Tool[]> {
   } catch (error) {
     console.error("Error generating tool suggestions:", error)
 
-    // Fallback suggestions
     return [
       {
-        name: "ChatGPT",
-        description: "AI assistant for research and writing help",
+        name: "DeepSeek Chat",
+        description:
+          "Advanced AI assistant for research, coding, and workflow optimization with reasoning capabilities",
         category: "AI Assistant",
-        url: "https://chat.openai.com",
-      },
-      {
-        name: "Google Scholar",
-        description: "Academic search engine for research papers",
-        category: "Research",
-        url: "https://scholar.google.com",
+        url: "https://chat.deepseek.com",
       },
       {
         name: "Notion",
-        description: "All-in-one workspace for notes and organization",
+        description: "All-in-one workspace for project planning, documentation, and workflow management",
         category: "Productivity",
         url: "https://notion.so",
+      },
+      {
+        name: "Linear",
+        description: "Modern issue tracking and project management for streamlined development workflows",
+        category: "Project Management",
+        url: "https://linear.app",
+      },
+      {
+        name: "Figma",
+        description: "Collaborative design tool for creating workflows, mockups, and design systems",
+        category: "Design",
+        url: "https://figma.com",
       },
     ]
   }
@@ -72,15 +99,22 @@ export async function analyzeTabs(tabs: TabInfo[]): Promise<string> {
     const tabsDescription = tabs.map((tab) => `${tab.title} (${tab.category})`).join(", ")
 
     const { text } = await generateText({
-      model: openai("gpt-4o"),
-      system: `You are a helpful AI assistant that analyzes browser tabs to provide casual, friendly insights about the user's workflow. 
-      Keep your response conversational and under 50 words. Focus on being helpful and encouraging.`,
-      prompt: `The user has these tabs open: ${tabsDescription}. Provide a brief, casual notification about their workflow or suggest how they might be more productive.`,
+      model: deepseek("deepseek-chat"),
+      system: `You are a helpful AI assistant that analyzes browser tabs to provide insightful, actionable workflow suggestions. 
+      
+      Analyze the user's open tabs and provide:
+      1. A brief insight about their current workflow
+      2. A practical suggestion for optimization or productivity
+      
+      Keep your response conversational, encouraging, and under 60 words. Focus on being genuinely helpful rather than generic.`,
+      prompt: `The user currently has these tabs open: ${tabsDescription}. 
+      
+      Based on these tabs, what can you infer about their current workflow? Provide a helpful insight or suggestion that could improve their productivity or workflow efficiency.`,
     })
 
     return text
   } catch (error) {
     console.error("Error analyzing tabs:", error)
-    return "I notice you have several development and design tabs open. Looks like you're working on something creative! 🚀"
+    return "I notice you have several productive tabs open! Consider using a workflow management tool like Notion or Linear to organize your research and create a more streamlined process. 🚀"
   }
 }

@@ -156,7 +156,7 @@ export default function ScrabbleLanding() {
             <div className="space-y-6">
               <div className="inline-flex items-center px-4 py-2 bg-indigo-50 rounded-full text-indigo-700 text-sm font-medium">
                 <Sparkles className="w-4 h-4 mr-2" />
-                AI-Powered Workflow Intelligence
+                DeepSeek AI-Powered Workflow Intelligence
               </div>
 
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 leading-tight">
@@ -169,8 +169,8 @@ export default function ScrabbleLanding() {
               </h1>
 
               <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                AI-powered tool discovery that analyzes your current workflow and suggests the perfect resources for any
-                task. Get personalized recommendations in seconds.
+                DeepSeek AI-powered workflow discovery that analyzes your needs and suggests comprehensive tool
+                ecosystems. Get intelligent, multi-step workflow recommendations that actually work together.
               </p>
             </div>
 
@@ -182,7 +182,7 @@ export default function ScrabbleLanding() {
                     <div className="flex-1 relative">
                       <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
                       <Input
-                        placeholder="Help me find the best resources for my assignment today"
+                        placeholder="Help me create a complete workflow for my project today"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyPress={(e) => e.key === "Enter" && handleSearch()}
@@ -217,8 +217,10 @@ export default function ScrabbleLanding() {
         {tools.length > 0 && (
           <div className="max-w-7xl mx-auto px-6 py-16">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold text-slate-900 mb-4">AI-Suggested Tools</h2>
-              <p className="text-slate-600">Personalized recommendations based on your query and current workflow</p>
+              <h2 className="text-3xl font-bold text-slate-900 mb-4">DeepSeek AI Workflow Recommendations</h2>
+              <p className="text-slate-600">
+                Comprehensive tool ecosystems designed to work together for maximum efficiency
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -269,8 +271,8 @@ export default function ScrabbleLanding() {
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900 mb-4">AI-Powered Matching</h3>
                 <p className="text-slate-600 leading-relaxed">
-                  Advanced algorithms analyze your needs and suggest the perfect tools for your specific workflow and
-                  requirements.
+                  DeepSeek AI analyzes your requirements and suggests complete workflow ecosystems, not just individual
+                  tools. Get recommendations that actually work together.
                 </p>
               </Card>
 
