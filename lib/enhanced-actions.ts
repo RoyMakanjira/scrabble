@@ -1,12 +1,10 @@
 "use server"
 
-import { generateText } from "ai"
-import { createOpenAI } from "@ai-sdk/openai"
+import OpenAI from "openai"
 
-const deepseek = createOpenAI({
-  name: "deepseek",
+const openai = new OpenAI({
+  baseURL: "https://api.deepseek.com",
   apiKey: process.env.DEEPSEEK_API_KEY ?? "",
-  baseURL: "https://api.deepseek.com/v1/chat/completions",
 })
 
 interface WorkflowStep {
@@ -51,9 +49,14 @@ export async function generatePreciseWorkflow(query: string, context?: string): 
   }
 
   try {
-    const { text } = await generateText({
-      model: deepseek("deepseek-chat"),
-      system: `You are an expert workflow architect and efficiency consultant. Your task is to create precise of the task in the prompt, step-by-step workflows that maximize efficiency and minimize wasted effort.
+    console.log("[v0] Calling DeepSeek API for workflow generation...")
+
+    const completion = await openai.chat.completions.create({
+      model: "deepseek-chat",
+      messages: [
+        {
+          role: "system",
+          content: `You are an expert workflow architect and efficiency consultant. Your task is to create precise, step-by-step workflows that maximize efficiency and minimize wasted effort.
 
       You must analyze the user's request and create a comprehensive workflow with:
       1. Clear, actionable steps in logical order
@@ -117,8 +120,10 @@ export async function generatePreciseWorkflow(query: string, context?: string): 
       - Consider different skill levels
       - Focus on practical, actionable advice
       - Prioritize efficiency and quality outcomes`,
-
-      prompt: `Create a precise, step-by-step workflow for: "${query}"
+        },
+        {
+          role: "user",
+          content: `Create a precise, step-by-step workflow for: "${query}"
       
       ${context ? `Additional context: ${context}` : ""}
       
@@ -130,7 +135,15 @@ export async function generatePreciseWorkflow(query: string, context?: string): 
       5. Quality outcomes - not just speed
       
       Make this workflow actionable and specific enough that someone could follow it immediately.`,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 4000,
     })
+
+    console.log("[v0] DeepSeek API response received successfully")
+
+    const text = completion.choices[0]?.message?.content || ""
 
     let cleanedText = text.trim()
 
@@ -154,21 +167,147 @@ export async function generatePreciseWorkflow(query: string, context?: string): 
     }
 
     return workflow
-  } catch (error) {
-    console.error("Error generating precise workflow:", error)
-    console.error("Error details:", error instanceof Error ? error.message : String(error))
+  } catch (error: any) {
+    if (error?.status === 402) {
+      console.warn("[v0] DeepSeek account has insufficient balance. Using enhanced fallback workflow.")
+      return getEnhancedFallbackWorkflow(query, "insufficient_balance")
+    } else if (error?.status === 401) {
+      console.error("[v0] DeepSeek API key is invalid or expired")
+      return getEnhancedFallbackWorkflow(query, "invalid_api_key")
+    } else if (error?.status === 429) {
+      console.warn("[v0] DeepSeek API rate limit exceeded. Using fallback workflow.")
+      return getEnhancedFallbackWorkflow(query, "rate_limited")
+    }
 
-    return getFallbackWorkflow(query)
+    console.error("Error generating precise workflow:", error)
+    if (error instanceof Error) {
+      console.error("Error message:", error.message)
+      console.error("Error stack:", error.stack)
+    }
+    console.error("Full error object:", error)
+    return getEnhancedFallbackWorkflow(query, "general_error")
   }
 }
 
-function getFallbackWorkflow(query: string): PreciseWorkflow {
-  return {
-    title: `Workflow: ${query}`,
-    description: "A structured approach to accomplish your goals efficiently",
-    totalEstimatedTime: "2-4 hours",
-    complexity: "moderate",
-    steps: [
+function getEnhancedFallbackWorkflow(query: string, errorType?: string): PreciseWorkflow {
+  const isWebDev =
+    query.toLowerCase().includes("website") ||
+    query.toLowerCase().includes("web") ||
+    query.toLowerCase().includes("app")
+  const isDesign =
+    query.toLowerCase().includes("design") || query.toLowerCase().includes("ui") || query.toLowerCase().includes("ux")
+  const isMarketing =
+    query.toLowerCase().includes("marketing") ||
+    query.toLowerCase().includes("social") ||
+    query.toLowerCase().includes("content")
+
+  let contextualSteps: WorkflowStep[] = []
+  let contextualTools: Tool[] = []
+
+  if (isWebDev) {
+    contextualSteps = [
+      {
+        id: "step-1",
+        title: "Project Planning & Requirements",
+        description: "Define project scope, target audience, and technical requirements for your web project",
+        estimatedTime: "1-2 hours",
+        tools: [
+          {
+            name: "Figma",
+            description: "Create wireframes and mockups for your web project",
+            category: "Design",
+            url: "https://figma.com",
+            pricing: "freemium",
+            difficulty: "beginner",
+          },
+        ],
+        dependencies: [],
+        priority: "high",
+        category: "Planning",
+        completed: false,
+      },
+      {
+        id: "step-2",
+        title: "Development Environment Setup",
+        description: "Set up your development tools, version control, and project structure",
+        estimatedTime: "30-45 minutes",
+        tools: [
+          {
+            name: "VS Code",
+            description: "Primary code editor with extensions for web development",
+            category: "Development",
+            url: "https://code.visualstudio.com",
+            pricing: "free",
+            difficulty: "beginner",
+          },
+        ],
+        dependencies: ["step-1"],
+        priority: "high",
+        category: "Development",
+        completed: false,
+      },
+    ]
+    contextualTools = [
+      {
+        name: "Vercel",
+        description: "Deploy and host your web applications with ease",
+        category: "Hosting",
+        url: "https://vercel.com",
+        pricing: "freemium",
+        difficulty: "beginner",
+      },
+    ]
+  } else if (isDesign) {
+    contextualSteps = [
+      {
+        id: "step-1",
+        title: "Design Research & Inspiration",
+        description: "Gather inspiration, analyze competitors, and understand design trends",
+        estimatedTime: "45-60 minutes",
+        tools: [
+          {
+            name: "Dribbble",
+            description: "Browse design inspiration and current trends",
+            category: "Design",
+            url: "https://dribbble.com",
+            pricing: "freemium",
+            difficulty: "beginner",
+          },
+        ],
+        dependencies: [],
+        priority: "high",
+        category: "Research",
+        completed: false,
+      },
+    ]
+  } else if (isMarketing) {
+    contextualSteps = [
+      {
+        id: "step-1",
+        title: "Audience Research & Strategy",
+        description: "Define target audience, create buyer personas, and develop content strategy",
+        estimatedTime: "1-2 hours",
+        tools: [
+          {
+            name: "Google Analytics",
+            description: "Analyze audience behavior and demographics",
+            category: "Analytics",
+            url: "https://analytics.google.com",
+            pricing: "free",
+            difficulty: "intermediate",
+          },
+        ],
+        dependencies: [],
+        priority: "high",
+        category: "Strategy",
+        completed: false,
+      },
+    ]
+  }
+
+  // Default fallback steps if no context matches
+  if (contextualSteps.length === 0) {
+    contextualSteps = [
       {
         id: "step-1",
         title: "Planning & Research",
@@ -180,14 +319,6 @@ function getFallbackWorkflow(query: string): PreciseWorkflow {
             description: "Organize research and create project structure",
             category: "Productivity",
             url: "https://notion.so",
-            pricing: "freemium",
-            difficulty: "beginner",
-          },
-          {
-            name: "Miro",
-            description: "Create visual mind maps and workflow diagrams",
-            category: "Design",
-            url: "https://miro.com",
             pricing: "freemium",
             difficulty: "beginner",
           },
@@ -214,7 +345,7 @@ function getFallbackWorkflow(query: string): PreciseWorkflow {
         ],
         dependencies: ["step-1"],
         priority: "high",
-        category: "Planning",
+        category: "Setup",
         completed: false,
       },
       {
@@ -239,38 +370,60 @@ function getFallbackWorkflow(query: string): PreciseWorkflow {
         category: "Testing",
         completed: false,
       },
-    ],
-    recommendedTools: [
-      {
-        name: "DeepSeek Chat",
-        description: "AI assistant for guidance throughout the workflow",
-        category: "AI Assistant",
-        url: "https://chat.deepseek.com",
-        pricing: "freemium",
-        difficulty: "beginner",
-      },
-      {
-        name: "Todoist",
-        description: "Track progress and manage tasks efficiently",
-        category: "Productivity",
-        url: "https://todoist.com",
-        pricing: "freemium",
-        difficulty: "beginner",
-      },
-    ],
+    ]
+  }
+
+  return {
+    title: `${errorType === "insufficient_balance" ? "🔋 " : ""}Workflow: ${query}`,
+    description:
+      errorType === "insufficient_balance"
+        ? "A comprehensive workflow created with our enhanced fallback system (DeepSeek API credits needed for AI-powered workflows)"
+        : "A structured approach to accomplish your goals efficiently",
+    totalEstimatedTime: "2-4 hours",
+    complexity: "moderate",
+    steps: contextualSteps,
+    recommendedTools:
+      contextualTools.length > 0
+        ? contextualTools
+        : [
+            {
+              name: "DeepSeek Chat",
+              description: "AI assistant for guidance throughout the workflow",
+              category: "AI Assistant",
+              url: "https://chat.deepseek.com",
+              pricing: "freemium",
+              difficulty: "beginner",
+            },
+            {
+              name: "Todoist",
+              description: "Track progress and manage tasks efficiently",
+              category: "Productivity",
+              url: "https://todoist.com",
+              pricing: "freemium",
+              difficulty: "beginner",
+            },
+          ],
     efficiencyTips: [
       "Break large tasks into smaller, manageable chunks of 25-45 minutes",
       "Use time-blocking to maintain focus on each step without distractions",
       "Set up templates for recurring workflow patterns to save setup time",
-      "Use the Pomodoro technique during implementation phases",
+      errorType === "insufficient_balance"
+        ? "💡 Add DeepSeek API credits to unlock AI-powered workflow generation with personalized recommendations"
+        : "Use the Pomodoro technique during implementation phases",
     ],
     alternatives: [
       "Consider using project management tools like Asana or Monday.com for complex workflows",
       "Adapt the timeline based on your experience level - beginners should add 50% more time",
       "For team projects, add collaboration checkpoints between major steps",
-      "Use automation tools like Zapier to connect different workflow tools",
+      errorType === "insufficient_balance"
+        ? "🚀 Upgrade your DeepSeek account to get AI-generated workflows tailored to your specific needs"
+        : "Use automation tools like Zapier to connect different workflow tools",
     ],
   }
+}
+
+function getFallbackWorkflow(query: string): PreciseWorkflow {
+  return getEnhancedFallbackWorkflow(query)
 }
 
 export async function optimizeExistingWorkflow(workflowDescription: string): Promise<string[]> {
@@ -280,9 +433,14 @@ export async function optimizeExistingWorkflow(workflowDescription: string): Pro
   }
 
   try {
-    const { text } = await generateText({
-      model: deepseek("deepseek-chat"),
-      system: `You are a workflow optimization expert. Analyze existing workflows and provide specific, actionable improvements.
+    console.log("[v0] Calling DeepSeek API for workflow optimization...")
+
+    const completion = await openai.chat.completions.create({
+      model: "deepseek-chat",
+      messages: [
+        {
+          role: "system",
+          content: `You are a workflow optimization expert. Analyze existing workflows and provide specific, actionable improvements.
       
       Return your response as a JSON array of optimization suggestions (no markdown, no extra text):
       [
@@ -296,11 +454,21 @@ export async function optimizeExistingWorkflow(workflowDescription: string): Pro
       - Improving tool integration
       - Automating repetitive tasks
       - Enhancing quality control`,
-
-      prompt: `Analyze this workflow and suggest 4-6 specific optimizations: "${workflowDescription}"
+        },
+        {
+          role: "user",
+          content: `Analyze this workflow and suggest 4-6 specific optimizations: "${workflowDescription}"
       
       Provide concrete, actionable suggestions that would measurably improve efficiency or quality.`,
+        },
+      ],
+      temperature: 0.7,
+      max_tokens: 1000,
     })
+
+    console.log("[v0] DeepSeek optimization API response received successfully")
+
+    const text = completion.choices[0]?.message?.content || ""
 
     let cleanedText = text.trim()
 
@@ -318,15 +486,30 @@ export async function optimizeExistingWorkflow(workflowDescription: string): Pro
     const optimizations = JSON.parse(cleanedText)
 
     return Array.isArray(optimizations) ? optimizations : getFallbackOptimizations()
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.status === 402) {
+      console.warn("[v0] DeepSeek account has insufficient balance. Using enhanced fallback optimizations.")
+      return getEnhancedFallbackOptimizations("insufficient_balance")
+    } else if (error?.status === 401) {
+      console.error("[v0] DeepSeek API key is invalid or expired")
+      return getEnhancedFallbackOptimizations("invalid_api_key")
+    } else if (error?.status === 429) {
+      console.warn("[v0] DeepSeek API rate limit exceeded. Using fallback optimizations.")
+      return getEnhancedFallbackOptimizations("rate_limited")
+    }
+
     console.error("Error optimizing workflow:", error)
-    console.error("Error details:", error instanceof Error ? error.message : String(error))
-    return getFallbackOptimizations()
+    if (error instanceof Error) {
+      console.error("Error message:", error.message)
+      console.error("Error stack:", error.stack)
+    }
+    console.error("Full error object:", error)
+    return getEnhancedFallbackOptimizations("general_error")
   }
 }
 
-function getFallbackOptimizations(): string[] {
-  return [
+function getEnhancedFallbackOptimizations(errorType?: string): string[] {
+  const baseOptimizations = [
     "Batch similar tasks together to reduce context switching and maintain focus",
     "Set up templates and checklists for recurring workflow patterns",
     "Use automation tools like Zapier or Make to handle repetitive steps",
@@ -334,4 +517,18 @@ function getFallbackOptimizations(): string[] {
     "Create a dedicated workspace free from distractions during focused work",
     "Use time-tracking tools to identify and eliminate time-wasting activities",
   ]
+
+  if (errorType === "insufficient_balance") {
+    return [
+      ...baseOptimizations,
+      "💡 Add DeepSeek API credits to unlock AI-powered workflow optimization with personalized suggestions",
+      "🚀 Consider upgrading your DeepSeek account for unlimited AI-powered workflow analysis",
+    ]
+  }
+
+  return baseOptimizations
+}
+
+function getFallbackOptimizations(): string[] {
+  return getEnhancedFallbackOptimizations()
 }
