@@ -10,6 +10,7 @@ import { WorkflowStepCard } from "@/components/workflow-step-card"
 import { generatePreciseWorkflow, optimizeExistingWorkflow, type PreciseWorkflow } from "@/lib/enhanced-actions"
 import NavBar from "@/components/NavBar"
 import WorkflowCard from "@/components/WorkflowCard"
+import Hero from "@/components/Hero"
 
 interface Tool {
   name: string
@@ -120,11 +121,6 @@ export default function PreciseWorkflowGenerator() {
               Generate step-by-step workflows with DeepSeek AI that maximize efficiency, minimize waste, and deliver
               exceptional results. Get tool recommendations that actually work together.
             </p>
-            <div className="flex justify-center">
-              <div className="transform rotate-3 hover:rotate-0 transition-transform duration-500 ease-out">
-                <WorkflowCard />
-              </div>
-            </div>
             
           </div>
 
@@ -164,6 +160,13 @@ export default function PreciseWorkflowGenerator() {
               </div>
             </Card>
           </div>
+          <div className="flex justify-center">
+              <div className="transform rotate-3 hover:rotate-0 transition-transform duration-500 ease-out">
+                <WorkflowCard />
+              </div>
+            </div>
+
+            <Hero />
         </div>
       </div>
 
