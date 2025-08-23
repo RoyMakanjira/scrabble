@@ -72,15 +72,14 @@ export default function Hero() {
           <div className="space-y-6 sm:space-y-8">
             <div className="space-y-4 sm:space-y-6">
               <p className="font-serif text-blue-500 text-base sm:text-lg font-medium">
-                You deploy way more than you think
+                Save, track and refine workflows
               </p>
               <h1 className="font-sans text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-gray-900 leading-tight">
                 Workflow tells you where
                 <span className="block">you went wrong</span>
               </h1>
               <p className="font-serif text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
-                After every deployment, Workflow tells you how to improve, whether you're building features, fixing
-                bugs, managing releases, or just coding.
+                Scrabble learns from your open tabs, tools, and habits to suggest next-best actions.Think of it as your workflow co-pilot — always analyzing, always optimizing.
               </p>
             </div>
           </div>
@@ -91,7 +90,7 @@ export default function Hero() {
               <h2 className="font-sans text-xl sm:text-2xl font-semibold text-gray-900 px-4 sm:px-0">
                 Development AI that helps during the build, not after.
               </h2>
-              <p className="font-serif text-blue-400 text-base sm:text-lg">Try Workflow on your next project today.</p>
+              <p className="font-serif text-blue-400 text-base sm:text-lg">Try Scrabble on your next project today.</p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4 sm:px-0">
@@ -99,20 +98,32 @@ export default function Hero() {
                 size="lg"
                 className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-xl shadow-lg"
               >
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                </svg>
-                Get for Mac
+                <svg
+  className="w-4 h-4 sm:w-5 sm:h-5 mr-2"
+  viewBox="0 0 24 24"
+  fill="currentColor"
+  aria-hidden="true"
+>
+  <path d="M12 .296c-6.63 0-12 5.373-12 12 0 5.302 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.089-.745.083-.729.083-.729 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.605-2.665-.305-5.466-1.332-5.466-5.93 0-1.31.469-2.381 1.236-3.221-.124-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 0 1 3.003-.404c1.018.005 2.044.138 3.003.404 2.293-1.552 3.3-1.23 3.3-1.23.655 1.652.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.102.823 2.222 0 1.604-.015 2.896-.015 3.286 0 .317.216.686.825.57C20.565 22.092 24 17.592 24 12.296 24 5.669 18.627.296 12 .296z" />
+</svg>
+
+                Get Started
               </Button>
               <Button
                 variant="outline"
                 size="lg"
                 className="w-full sm:w-auto bg-gray-800 hover:bg-gray-900 text-white border-gray-800 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium rounded-xl shadow-lg"
               >
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v18l-6-1.5V3.5L20 3zm-8 8.25V5.13L8.5 4.5v6.48L12 11.25z" />
-                </svg>
-                Get for Windows
+                <svg
+  className="w-4 h-4 sm:w-5 sm:h-5 mr-2"
+  fill="currentColor"
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+>
+  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm6 12 6-4-6-4v8z" />
+</svg>
+
+                Book for a Demo
               </Button>
             </div>
           </div>

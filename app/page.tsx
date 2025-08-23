@@ -151,18 +151,7 @@ export default function PreciseWorkflowGenerator() {
             </Card>
           </div>
 
-          {/* WorkflowCard */}
-          <div className="flex justify-center mt-8 sm:mt-12 px-4">
-            <div className="transform rotate-1 sm:rotate-3 hover:rotate-0 transition-transform duration-500 ease-out">
-              <WorkflowCard />
-            </div>
-          </div>
-
-          <Hero />
-        </div>
-      </div>
-
-      {/* Workflow Results */}
+             {/* Workflow Results */}
       {workflow && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
           {/* Workflow Header */}
@@ -296,6 +285,18 @@ export default function PreciseWorkflowGenerator() {
           )}
         </div>
       )}
+
+          {/* WorkflowCard */}
+          <div className="flex justify-center mt-8 sm:mt-12 px-4">
+            <div className="transform rotate-1 sm:rotate-3 hover:rotate-0 transition-transform duration-500 ease-out">
+              <WorkflowCard />
+            </div>
+          </div>
+
+          <Hero />
+        </div>
+      </div>
+
 
       {/* Features Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
