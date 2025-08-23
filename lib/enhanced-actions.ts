@@ -4,7 +4,7 @@ import OpenAI from "openai"
 
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY ?? "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",
+  apiKey: process.env.OPENROUTER_API_KEY ?? "",
 })
 
 interface WorkflowStep {
